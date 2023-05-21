@@ -1,0 +1,47 @@
+(ns acme.main
+  (:require
+   [api.albums :as api]
+   [pages.album_detail :as album-detail]
+   ["package:flutter/material.dart" :as m]
+   ["package:http/http.dart" :as http]
+   ["dart:convert" :as c]
+   [cljd.flutter :as f]))
+
+(defn- navigate [navigator page name]
+  (.push
+   navigator (#/(m/MaterialPageRoute Object)
+              .settings (m/RouteSettings .name name)
+              .builder
+              (f/build page))))
+
+(defn- build-list-items [body]
+  (f/widget
+   :get [m/Navigator]
+   (m/ListView.builder
+    .itemCount (count body)
+    .itemBuilder
+    (f/build
+     #_{:clj-kondo/ignore [:unresolved-symbol]}
+     [idx]
+     (let [album (get-in body #_{:clj-kondo/ignore [:unresolved-symbol]} [idx])]
+       (m/ListTile
+        .onTap (fn [] (navigate navigator
+                                (album-detail/view album)
+                                (str "/album-detail/" (get album "id"))))
+        .title (m/Text (get album "title"))))))))
+
+(defn main []
+  (f/run
+   (m/MaterialApp
+    .title "Fetch Data List Example"
+    .theme (m/ThemeData .primarySwatch m/Colors.blue))
+   .home
+   (m/Scaffold .appBar (m/AppBar .title (m/Text "Fetch Data List Example")))
+   .body
+   (m/Center)
+   :watch [response (api.albums/get-album)]
+   (if-some [{sc .-statusCode body .-body} ^http/Response response]
+     (case sc
+       200 (build-list-items (c/json.decode body))
+       (m/Text (str "Something wrong happened, status code: " sc)))
+     (m/CircularProgressIndicator))))

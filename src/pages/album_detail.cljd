@@ -1,0 +1,23 @@
+(ns pages.album_detail
+  (:require
+   ["package:flutter/material.dart" :as m]
+   [cljd.flutter :as f]))
+
+(defn view [album]
+  (m/Scaffold
+   .appBar (m/AppBar .title (m/Text (str (get album "id"))))
+   .body
+   (f/widget
+    :get [m/Navigator]
+    :get {{{name .-name} .-settings} m/ModalRoute}
+    m/Center
+    (m/Column
+     .mainAxisAlignment m/MainAxisAlignment.center
+     .children
+     [(m/Column
+       .crossAxisAlignment m/CrossAxisAlignment.start
+       .children [(m/Text name)
+                  (m/Text (str "Title:" (get album "title")))
+                  (m/Text (str "Id:" (get album "id")))
+                  (m/Text (str "UserId:" (get album "userId")))])
+      (m/ElevatedButton .onPressed #(.pop navigator) .child (m/Text "Go back!"))]))))

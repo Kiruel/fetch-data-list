@@ -1,0 +1,16 @@
+{:linters {:non-arg-vec-return-type-hint {:level :off}
+           :flutter/widget {:level :error}
+           :clojure-lsp/unused-public-var {:exclude #{main}}
+           :unresolved-namespace {:exclude [dart dart:core]}
+           :unresolved-symbol 
+           {:exclude [AbstractClassInstantiationError ArgumentError AssertionError BidirectionalIterator 
+                      BigIntbool bool CastError Comparable Comparator ConcurrentModificationError 
+                      CyclicInitializationError DateTime double Duration Error Exception Expando  
+                      FallThroughError Finalizer FormatException Function IndexError IntegerDivisionByZeroException
+                      Invocation Iterable Iterator List Map MapEntry Match NoSuchMethodError Null NullThrownError
+                      Object OutOfMemoryError Pattern pragma RangeError RegExp RegExpMatch Runes RuneIterator Set 
+                      Sink StackOverflowError StackTrace StateError Stopwatch String StringBuffer StringSink
+                      Symbol Type TypeError UnimplementedError UnsupportedError Uri WeakReference]}} 
+ :hooks {:analyze-call {cljd.flutter.alpha/widget hooks.flutter/widget
+                        cljd.flutter/run hooks.flutter2/widget
+                        cljd.flutter/widget hooks.flutter2/widget}}}
