@@ -7,9 +7,7 @@
 
 (def ^:private dio-client (dio/Dio (dio/BaseOptions .baseUrl base-url)))
 
-(def ^:private api-client (do
-                            (println dio-client)
-                            (api/RestClient dio-client)))
+(def ^:private api-client (api/RestClient dio-client))
 
 (defn get-albums
   "Call http for /albums or /albums/{page}
