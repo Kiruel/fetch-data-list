@@ -48,3 +48,5 @@ app.*.map.json
 .clojuredart/
 lib/cljd-out/
 test/cljd-out/
+
+.clj-kondo/

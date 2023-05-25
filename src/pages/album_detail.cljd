@@ -5,7 +5,7 @@
 
 (defn view [album]
   (m/Scaffold
-   .appBar (m/AppBar .title (m/Text (str (get album "id"))))
+   .appBar (m/AppBar .title (m/Text (str (.-id album))))
    .body
    (f/widget
     :get [m/Navigator]
@@ -17,7 +17,7 @@
      [(m/Column
        .crossAxisAlignment m/CrossAxisAlignment.start
        .children [(m/Text name)
-                  (m/Text (str "Title:" (get album "title")))
-                  (m/Text (str "Id:" (get album "id")))
-                  (m/Text (str "UserId:" (get album "userId")))])
+                  (m/Text (str "Title:" (.-title album)))
+                  (m/Text (str "Id:" (.-id album)))
+                  (m/Text (str "UserId:" (.-userId album)))])
       (m/ElevatedButton .onPressed #(.pop navigator) .child (m/Text "Go back!"))]))))
