@@ -1,7 +1,6 @@
 (ns acme.main
   (:require
    [api.albums :as api]
-   ["dart:async" :as async]
    [pages.album_detail :as album-detail]
    ["list_view_refreshable.dart" :as ext-refresh]
    ["package:flutter/material.dart" :as m]
@@ -36,11 +35,12 @@
                                     (str "/album-detail/" (.-id album))))
             .title (m/Text (.-title album))))))
        ext-refresh/ListViewRefreshable
-       (.refreshable
+       (.refreshable ; here the refresh
         (fn []
           (await (fetch-albums)))))))
 
 (defn main []
+  (fetch-albums)
   (f/run
    (m/MaterialApp
     .title "Fetch Data List Example"
@@ -48,7 +48,6 @@
    .home
    (m/Scaffold .appBar (m/AppBar .title (m/Text "Fetch Data List Example")))
    .body
-   :watch [fetch-albums]
    (m/Center)
    :watch [{:keys [albums]} app-state]
    (if-some [{} albums]

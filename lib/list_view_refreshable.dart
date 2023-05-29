@@ -29,15 +29,3 @@ class _RefreshableWidgetState extends State<RefreshableWidget> {
     return widget.builder(refreshController);
   }
 }
-
-class MyWidget extends StatelessWidget {
-  const MyWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView().refreshable(() async {
-      await Future.delayed(Duration(milliseconds: 1000));
-      print('toto');
-    });
-  }
-}
