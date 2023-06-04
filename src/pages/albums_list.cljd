@@ -1,0 +1,45 @@
+(ns pages.albums-list
+  (:require
+   [pages.album_detail :as album-detail]
+   ["package:flutter/material.dart" :as m]
+   [hti.re-dash :as rd]
+   [cljd.flutter :as f]
+   [models.albums-model :as albums-model]
+   ["list_view_refreshable.dart" :as ext-refresh]))
+
+(defn- navigate [navigator page name]
+  (.push
+   navigator (#/(m/MaterialPageRoute Object)
+              .settings (m/RouteSettings .name name)
+              .builder
+              (f/build page))))
+
+(defn- list-view-albums [albums navigator]
+  (m/ListView.builder
+   .itemCount (count albums)
+   .itemBuilder
+   (f/build
+    #_{:clj-kondo/ignore [:unresolved-symbol]}
+    [idx]
+    (let [album (get-in albums #_{:clj-kondo/ignore [:unresolved-symbol]} [idx])]
+      (m/ListTile
+       .onTap (fn [] (navigate navigator
+                               (album-detail/view album)
+                               (str "/album-detail/" (.-id album))))
+       .title (m/Text (.-title album)))))))
+
+(defn- build-list-items [albums]
+  (f/widget
+   :get [m/Navigator]
+   (-> (list-view-albums albums navigator)
+       ext-refresh/ListViewRefreshable
+       (.refreshable
+        #(rd/dispatch [::albums-model/refresh-albums])))))
+
+(def view
+  (f/widget
+   :watch [albums (rd/subscribe [::albums-model/get-albums])]
+   (do
+     (if-some [{} albums]
+     (build-list-items albums)
+     (m/CircularProgressIndicator)))))
