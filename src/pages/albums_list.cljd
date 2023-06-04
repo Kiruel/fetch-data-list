@@ -34,12 +34,12 @@
    (-> (list-view-albums albums navigator)
        ext-refresh/ListViewRefreshable
        (.refreshable
-        #(rd/dispatch [::albums-model/refresh-albums])))))
+        #(rd/dispatch [::albums-model/refresh-albums]))))) ; Here dispatch to refresh the list
 
-(def view
+(defn view []
+  (albums-model/register!)
   (f/widget
-   :watch [albums (rd/subscribe [::albums-model/get-albums])]
-   (do
-     (if-some [{} albums]
+   :watch [albums (rd/subscribe [::albums-model/get-albums])] ; Here subscribe to `get-albums`
+   (if-some [{} albums]
      (build-list-items albums)
-     (m/CircularProgressIndicator)))))
+     (m/CircularProgressIndicator))))

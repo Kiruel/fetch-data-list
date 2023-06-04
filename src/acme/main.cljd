@@ -2,11 +2,9 @@
   (:require
    [pages.albums-list :as albums-list]
    ["package:flutter/material.dart" :as m]
-   [models.albums-model :as albums-model]
    [cljd.flutter :as f]))
 
 (defn main []
-  (albums-model/register!)
   (f/run
    (m/MaterialApp
     .title "Fetch Data List Example"
@@ -15,4 +13,4 @@
    (m/Scaffold .appBar (m/AppBar .title (m/Text "Fetch Data List Example")))
    .body
    (m/Center)
-   albums-list/view))
+   (albums-list/view)))
