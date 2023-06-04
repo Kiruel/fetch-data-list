@@ -37,7 +37,7 @@
         #(rd/dispatch [::albums-model/refresh-albums]))))) ; Here dispatch to refresh the list
 
 (defn view []
-  (albums-model/register!)
+  (rd/dispatch [::albums-model/refresh-albums])
   (f/widget
    :watch [albums (rd/subscribe [::albums-model/get-albums])] ; Here subscribe to `get-albums`
    (if-some [{} albums]
