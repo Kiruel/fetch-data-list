@@ -1,16 +1,11 @@
 (ns acme.main
   (:require
-   [api.albums :as api]
    [pages.album_detail :as album-detail]
    ["list_view_refreshable.dart" :as ext-refresh]
    ["package:flutter/material.dart" :as m]
+   [hti.re-dash :as rd]
+   [models.albums-model :as albums-model]
    [cljd.flutter :as f]))
-
-(defonce ^:private app-state
-  (atom {:albums []}))
-
-(defn- fetch-albums []
-  (swap! app-state assoc :albums (await (api.albums/get-albums))))
 
 (defn- navigate [navigator page name]
   (.push
@@ -38,12 +33,11 @@
    :get [m/Navigator]
    (-> (list-view-albums albums navigator)
        ext-refresh/ListViewRefreshable
-       (.refreshable ; here the refresh
-        (fn []
-          (await (fetch-albums)))))))
+       (.refreshable
+        #(rd/dispatch [::albums-model/refresh-albums])))))
 
 (defn main []
-  (fetch-albums)
+  (albums-model/register!)
   (f/run
    (m/MaterialApp
     .title "Fetch Data List Example"
@@ -52,7 +46,7 @@
    (m/Scaffold .appBar (m/AppBar .title (m/Text "Fetch Data List Example")))
    .body
    (m/Center)
-   :watch [{:keys [albums]} app-state]
-   (if-some [{} albums]
+   :watch [albums (rd/subscribe [::albums-model/get-albums])]
+   (if-some [{} (albums)]
      (build-list-items albums)
      (m/CircularProgressIndicator))))

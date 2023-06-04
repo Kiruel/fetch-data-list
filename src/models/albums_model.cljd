@@ -1,0 +1,29 @@
+(ns models.albums-model
+  (:require
+   [hti.re-dash :as rd]
+   [api.albums :as api]))
+
+(defn register! []
+
+  (rd/reg-event-fx
+   ::refresh-albums
+   (fn [_ _]
+     {::fetch-albums nil}))
+
+  (rd/reg-fx
+   ::fetch-albums
+   (fn [_]
+     (let [result (await (api.albums/get-albums))]
+       (rd/dispatch [::populate-albums result]))))
+
+  (rd/reg-event-db
+   ::populate-albums
+   (fn [db [_ albums]]
+     (assoc db :albums albums)))
+
+  (rd/reg-sub
+   ::get-albums
+   (fn [db _]
+     (:albums db nil)))
+
+  (rd/dispatch [::refresh-albums]))
