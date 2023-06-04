@@ -24,6 +24,4 @@
   (rd/reg-sub
    ::get-albums
    (fn [db _]
-     (:albums db nil)))
-
-  (rd/dispatch [::refresh-albums]))
+     (:albums db nil))))
